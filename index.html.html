@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Nelayan Pintar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --aqua-cyan: #00f0ff;
+            --aqua-glow: rgba(0, 240, 255, 0.4);
+            --deep-ocean: #031327;
+            --ocean-blue: #0077b6;
+            --seafoam-green: #00ffca;
+            --coral-orange: #ff6b6b;
+            --danger: #ff4757;
+            --card-bg: rgba(4, 28, 50, 0.80);
+            --card-border: rgba(0, 240, 255, 0.25);
+            --text-main: #f0f9ff;
+            --text-muted: #94a3b8;
+            --body-bg: linear-gradient(180deg, rgba(2, 14, 28, 0.90) 0%, rgba(3, 25, 48, 0.85) 50%, rgba(1, 10, 20, 0.95) 100%),
+                        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+        }
+
+        body.light-mode {
+            --card-bg: rgba(255, 255, 255, 0.90);
+            --card-border: rgba(0, 119, 182, 0.4);
+            --text-main: #020e1c;
+            --text-muted: #475569;
+            --seafoam-green: #00876c;
+            --aqua-cyan: #0077b6;
+            --body-bg: linear-gradient(180deg, rgba(230, 245, 255, 0.95) 0%, rgba(200, 230, 255, 0.90) 100%),
+                        url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background: var(--body-bg);
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1rem 5% 2rem;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .bubble {
+            position: fixed;
+            bottom: -50px;
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: rise 12s infinite ease-in;
+        }
+
+        .bubble:nth-child(1) { width: 40px; height: 40px; left: 10%; animation-duration: 10s; }
+        .bubble:nth-child(2) { width: 20px; height: 20px; left: 30%; animation-duration: 7s; animation-delay: 2s; }
+        .bubble:nth-child(3) { width: 50px; height: 50px; left: 55%; animation-duration: 13s; animation-delay: 1s; }
+        .bubble:nth-child(4) { width: 25px; height: 25px; left: 75%; animation-duration: 8s; animation-delay: 4s; }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.7; }
+            50% { opacity: 0.9; }
+            100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 2rem;
+        }
+
+        .marquee-banner {
+            background: rgba(0, 119, 182, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            font-size: 0.85rem;
+        }
+
+        .marquee-tag {
+            background: var(--seafoam-green);
+            color: #020e1c;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-weight: 800;
+            white-space: nowrap;
+            margin-right: 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .marquee-text {
+            white-space: nowrap;
+            animation: marquee 22s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .live-clock {
+            font-weight: 700;
+            color: var(--seafoam-green);
+            font-size: 0.9rem;
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--seafoam-green);
+            transform: scale(1.05);
+        }
+
+        .header-title { 
+            text-align: center; 
+            margin-bottom: 1.5rem; 
+        }
+
+        .header-title h1 { 
+            font-size: 2.3rem; 
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--seafoam-green) 50%, var(--aqua-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 25px rgba(0, 240, 255, 0.3);
+        }
+
+        .marine-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .marine-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .marine-card i {
+            font-size: 2rem;
+            color: var(--seafoam-green);
+        }
+
+        .marine-info h4 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .marine-info p {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(0, 255, 202, 0.2);
+            color: var(--seafoam-green);
+            border: 1px solid var(--seafoam-green);
+            margin-top: 4px;
+        }
+
+        .sos-banner {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid rgba(255, 71, 87, 0.4);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .sos-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--danger);
+            font-weight: 800;
+        }
+
+        .sos-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-sos {
+            background: var(--danger);
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: 0.2s;
+        }
+
+        .btn-sos:hover { opacity: 0.85; transform: translateY(-2px); }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .feature-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 240, 255, 0.25);
+            border-color: var(--seafoam-green);
+        }
+
+        .feature-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--ocean-blue), var(--seafoam-green), var(--aqua-cyan));
+        }
+
+        .feature-section h3 {
+            font-size: 1.15rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--seafoam-green);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+            padding-bottom: 0.6rem;
+        }
+
+        .input-group { margin-bottom: 1rem; position: relative; }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(2, 18, 38, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        body.light-mode .input-group input, 
+        body.light-mode .input-group select {
+            background: #ffffff;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--seafoam-green);
+            box-shadow: 0 0 12px rgba(0, 255, 202, 0.3);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, var(--ocean-blue), var(--aqua-cyan));
+            color: #020e1c;
+            font-weight: 800;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .btn-action:hover { 
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(0, 255, 202, 0.4);
+            transform: scale(1.01);
+        }
+
+        .result-container {
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        .result-box {
+            padding: 0.8rem 1rem;
+            padding-right: 4.5rem;
+            background: rgba(0, 240, 255, 0.08);
+            border-left: 3px solid var(--seafoam-green);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--seafoam-green);
+            line-height: 1.5;
+            min-height: 48px;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            transform: translateY(-50%);
+            background: rgba(0, 240, 255, 0.2);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .footer-tag {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .footer-tag span {
+            background: linear-gradient(135deg, var(--seafoam-green), var(--aqua-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logbook-list {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .logbook-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(0,240,255,0.2);
+            padding: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem 3%; }
+            .header-title h1 { font-size: 1.7rem; }
+            .sos-banner { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <div class="container">
+        
+        <!-- PENGUMUMAN MOVING TEXT -->
+        <div class="marquee-banner">
+            <span class="marquee-tag">INFO MARITIM KABONG</span>
+            <div class="marquee-text">
+                🚨 Amaran METMalaysia: Angin kencang & laut bergelora kategori pertama di perairan Sarawak. | 📢 Permohonan Elaun Sara Hidup Nelayan (LKIM) dibuka. | 🌊 Air pasang penuh Kabong dijangka jam 3:29 AM & 3.8m.
+            </div>
+        </div>
+
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div class="live-clock" id="liveClock"><i class="fa-regular fa-clock"></i> Memuatkan masa...</div>
+            <button class="theme-btn" onclick="toggleTheme()">
+                <i class="fa-solid fa-circle-half-stroke" id="themeIcon"></i>
+                <span id="themeText">Mod Terang</span>
+            </button>
+        </div>
+
+        <div class="header-title">
+            <h1>E-Nelayan Pintar</h1>
+        </div>
+
+        <!-- DASHBOARD CUACA & INDIKATOR LAUT -->
+        <div class="marine-dashboard">
+            <div class="marine-card">
+                <i class="fa-solid fa-cloud-showers-heavy"></i>
+                <div class="marine-info">
+                    <h4>Cuaca Kabong</h4>
+                    <p>Ribut Petir / 32°C</p>
+                </div>
+            </div>
+            <div class="marine-card">
+                <i class="fa-solid fa-wind"></i>
+                <div class="marine-info">
+                    <h4>Ombak & Angin</h4>
+                    <p>0.5m - 1.2m / 2 mph S</p>
+                </div>
+            </div>
+            <div class="marine-card">
+                <i class="fa-solid fa-water"></i>
+                <div class="marine-info">
+                    <h4>Pasang Surut</h4>
+                    <p>Pasang 3.8m (03:29 AM)</p>
+                </div>
+            </div>
+            <div class="marine-card">
+                <i class="fa-solid fa-circle-check"></i>
+                <div class="marine-info">
+                    <h4>Status Turun Laut</h4>
+                    <span class="status-badge">🟢 LAUT TENANG (SESUAI)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOS Kecemasan Laut -->
+        <div class="sos-banner">
+            <div class="sos-title">
+                <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+                <span>TALIAN KECEMASAN LAUT / SOS</span>
+            </div>
+            <div class="sos-buttons">
+                <a href="tel:999" class="btn-sos"><i class="fa-solid fa-phone"></i> 999 Kecemasan</a>
+                <a href="tel:082240800" class="btn-sos"><i class="fa-solid fa-ship"></i> APMM Sarawak</a>
+                <a href="tel:083411202" class="btn-sos"><i class="fa-solid fa-building-shield"></i> Polis Kabong</a>
+            </div>
+        </div>
+
+        <div class="tools-grid">
+            <!-- FUNGSI 1 -->
+            <div class="feature-section">
+                <h3><i class="fa-solid fa-gas-pump"></i> 1. Minyak Subsidi Laut</h3>
+                <div class="input-group">
+                    <label>Jenis Bahan Api Bot:</label>
+                    <select id="fuelType">
+                        <option value="1.65">Diesel Subsidi (RM 1.65/L)</option>
+                        <option value="1.65">Petrol Subsidi (RM 1.65/L)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Jumlah Liter Diperlukan:</label>
+                    <input type="number" id="fuelLiter" placeholder="Contoh: 100">
+                </div>
+                <button class="btn-action" onclick="calcFuel()">Kira Jumlah Harga</button>
+                <div class="result-container">
+                    <div class="result-box" id="fuelResult">Masukkan jumlah liter untuk kira.</div>
+                </div>
+            </div>
+
+            <!-- FUNGSI 2 -->
+            <div class="feature-section">
+                <h3><i class="fa-solid fa-hand-holding-dollar"></i> 2. Zakat Hasil Laut (2.5%)</h3>
+                <div class="input-group">
+                    <label>Total Hasil Jualan Tangkapan (RM):</label>
+                    <input type="number" id="catchSales" placeholder="Contoh: 5000">
+                </div>
+                <button class="btn-action" onclick="calcZakat()">Kira Kadar Zakat</button>
+                <div class="result-container">
+                    <div class="result-box" id="zakatResult">Kira zakat yang wajib dikeluarkan.</div>
+                </div>
+            </div>
+
+            <!-- FUNGSI 3 -->
+            <div class="feature-section">
+                <h3><i class="fa-solid fa-fish"></i> 3. Carian Harga & Pendapatan Ikan</h3>
+                <div class="input-group">
+                    <label>Taip Nama Ikan:</label>
+                    <input type="text" id="fishSearchInput" placeholder="Cari: Terubuk, Kerapu, Udang..." oninput="filterFishOptions()">
+                </div>
+                <div class="input-group">
+                    <label>Pilih Spesis Ikan:</label>
+                    <select id="marketItem">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Berat Jualan (KG):</label>
+                    <input type="number" id="marketWeight" placeholder="Contoh: 10">
+                </div>
+                <button class="btn-action" onclick="calcMarket()">Kira Anggaran Hasil</button>
+                <div class="result-container">
+                    <div class="result-box" id="marketResult">Cari nama ikan & masukkan berat.</div>
+                </div>
+            </div>
+
+            <!-- FUNGSI 4 -->
+            <div class="feature-section">
+                <h3><i class="fa-solid fa-calculator"></i> 4. Untung Bersih Pelayaran</h3>
+                <div class="input-group">
+                    <label>Hasil Jualan Kasar (RM):</label>
+                    <input type="number" id="grossRevenue" placeholder="Contoh: 1200">
+                </div>
+                <div class="input-group">
+                    <label>Kos Minyak / Fuel (RM):</label>
+                    <input type="number" id="costFuel" placeholder="Contoh: 200">
+                </div>
+                <div class="input-group">
+                    <label>Kos Ais & Umpan (RM):</label>
+                    <input type="number" id="costSupplies" placeholder="Contoh: 150">
+                </div>
+                <button class="btn-action" onclick="calcNetProfit()">Kira Baki Untung Bersih</button>
+                <div class="result-container">
+                    <button class="btn-copy" onclick="copyResult('netProfitResult', this)">Salin</button>
+                    <div class="result-box" id="netProfitResult">Nisbah untung bersih selepas kos.</div>
+                </div>
+            </div>
+
+            <!-- FUNGSI 5: KALKULATOR BEKALAN MAKANAN & MINUMAN -->
+            <div class="feature-section">
+                <h3><i class="fa-solid fa-utensils"></i> 5. Bekalan Makanan & Minuman Bot</h3>
+                <div class="input-group">
+                    <label>Jumlah Kru / Nelayan (Orang):</label>
+                    <input type="number" id="foodCrewCount" placeholder="Contoh: 4">
+                </div>
+                <div class="input-group">
+                    <label>Tempoh Pelayaran / Trip (Hari):</label>
+                    <input type="number" id="foodTripDays" placeholder="Contoh: 3">
+                </div>
+                <button class="btn-action" onclick="calcRations()">Kira Nisbah Bekalan</button>
+                <div class="result-container">
+                    <div class="result-box" id="rationsResult">Masukkan bilangan kru dan tempoh hari.</div>
+                </div>
+            </div>
+
+            <!-- FUNGSI 6 -->
+            <div class="feature-section">
+                <h3><i class="fa-solid fa-users-gear"></i> 6. Agihan Hasil Awak-Awak</h3>
+                <div class="input-group">
+                    <label>Untung Bersih Trip (RM):</label>
+                    <input type="number" id="crewNetProfit" placeholder="Contoh: 1500">
+                </div>
+                <div class="input-group">
+                    <label>Jumlah Awak-Awak (Kru):</label>
+                    <input type="number" id="crewCount" placeholder="Contoh: 3">
+                </div>
+                <button class="btn-action" onclick="calcCrewShare()">Kira Bagian Kru</button>
+                <div class="result-container">
+                    <div class="result-box" id="crewResult">Kira pembahagian untung kru.</div>
+                </div>
+            </div>
+
+            <!-- FUNGSI 7: LOGBOOK -->
+            <div class="feature-section" style="grid-column: 1 / -1;">
+                <h3><i class="fa-solid fa-book-bookmark"></i> 7. Rekod Logbook Untung Trip (Simpan & Kongsi)</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                    <div class="input-group">
+                        <label>Catatan / Tarikh Trip:</label>
+                        <input type="text" id="logNote" placeholder="Contoh: Trip Laut Dalam">
+                    </div>
+                    <div class="input-group">
+                        <label>Jenis Ikan Utama:</label>
+                        <input type="text" id="logFishType" placeholder="Contoh: Terubuk / Tenggiri">
+                    </div>
+                    <div class="input-group">
+                        <label>Jumlah Berat (KG):</label>
+                        <input type="number" id="logFishWeight" placeholder="Contoh: 25">
+                    </div>
+                    <div class="input-group">
+                        <label>Untung Bersih (RM):</label>
+                        <input type="number" id="logAmount" placeholder="Contoh: 850">
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <button class="btn-action" style="max-width: 220px;" onclick="addLog()">Simpan Rekod Trip</button>
+                    <button class="btn-action" style="max-width: 220px; background: #25D366; color:#fff;" onclick="shareWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Hantar Ke WhatsApp</button>
+                </div>
+
+                <div class="logbook-list" id="logList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-tag">
+        <span>#AIBOLEHCODE</span>
+    </div>
+
+    <div class="copyright-tag" style="text-align:center; font-size:0.8rem; margin-top:0.5rem; opacity:0.8;">
+        &copy; Hak Cipta Terpelihara E-Nelayan Pintar.
+    </div>
+
+    <script>
+        // Data Ikan
+        const fishDatabase = [
+            { name: "Ikan Terubuk Laut Sarawak", price: 42 },
+            { name: "Ikan Bawal Putih / Silver Pomfret", price: 38 },
+            { name: "Ikan Bawal Hitam", price: 28 },
+            { name: "Ikan Tenggiri Batang", price: 34 },
+            { name: "Ikan Senangin Kurau", price: 45 },
+            { name: "Ikan Kerapu Merah / Sunoh", price: 55 },
+            { name: "Ikan Kerapu Harimau", price: 36 },
+            { name: "Ikan Jenahak / Golden Snapper", price: 35 },
+            { name: "Ikan Merah / Red Snapper", price: 32 },
+            { name: "Ikan Pari / Pok", price: 22 },
+            { name: "Ikan Ebek / Diamond Trevally", price: 30 },
+            { name: "Udang Harimau / Laut", price: 50 },
+            { name: "Udang Galah Laut", price: 45 },
+            { name: "Sotong Katak / Cendol", price: 28 },
+            { name: "Ketam Nipah / Mud Crab", price: 38 },
+            { name: "Obor-Obor Masin Kabong", price: 15 }
+        ];
+
+        // Masa Jam Live
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('liveClock').innerHTML = `<i class="fa-regular fa-clock"></i> ${now.toLocaleTimeString()} | ${now.toLocaleDateString('ms-MY')}`;
+        }, 1000);
+
+        function populateFishDropdown(fishList) {
+            const selectEl = document.getElementById('marketItem');
+            selectEl.innerHTML = '';
+            fishList.forEach(fish => {
+                const opt = document.createElement('option');
+                opt.value = fish.price;
+                opt.setAttribute('data-name', fish.name);
+                opt.innerText = `${fish.name} (RM ${fish.price}/kg)`;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        function filterFishOptions() {
+            const query = document.getElementById('fishSearchInput').value.toLowerCase().trim();
+            const filtered = fishDatabase.filter(fish => fish.name.toLowerCase().includes(query));
+            populateFishDropdown(filtered);
+        }
+
+        populateFishDropdown(fishDatabase);
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.getElementById('themeText').innerText = isLight ? "Mod Gelap" : "Mod Terang";
+            document.getElementById('themeIcon').className = isLight ? "fa-solid fa-moon" : "fa-solid fa-circle-half-stroke";
+        }
+
+        function calcFuel() {
+            const price = parseFloat(document.getElementById('fuelType').value);
+            const liter = parseFloat(document.getElementById('fuelLiter').value);
+            if (!liter) return;
+            document.getElementById('fuelResult').innerHTML = `Total Minyak Subsidi: <strong>RM ${(price * liter).toFixed(2)}</strong> (${liter}L)`;
+        }
+
+        function calcZakat() {
+            const sales = parseFloat(document.getElementById('catchSales').value);
+            if (!sales) return;
+            document.getElementById('zakatResult').innerHTML = `Zakat Wajib Laut (2.5%): <strong>RM ${(sales * 0.025).toFixed(2)}</strong>`;
+        }
+
+        function calcMarket() {
+            const selectEl = document.getElementById('marketItem');
+            const price = parseFloat(selectEl.value);
+            const weight = parseFloat(document.getElementById('marketWeight').value);
+            if (!price || !weight) return;
+            const fishName = selectEl.options[selectEl.selectedIndex].getAttribute('data-name');
+            document.getElementById('marketResult').innerHTML = `Anggaran Hasil <strong>${fishName}</strong> (${weight}kg):<br><strong>RM ${(price * weight).toFixed(2)}</strong>`;
+        }
+
+        function calcNetProfit() {
+            const gross = parseFloat(document.getElementById('grossRevenue').value) || 0;
+            const fuel = parseFloat(document.getElementById('costFuel').value) || 0;
+            const supplies = parseFloat(document.getElementById('costSupplies').value) || 0;
+            const net = gross - (fuel + supplies);
+            document.getElementById('netProfitResult').innerHTML = `Untung Bersih: <strong>RM ${net.toFixed(2)}</strong>`;
+        }
+
+        function copyResult(elementId, btn) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text);
+            btn.innerText = "Disalin!";
+            setTimeout(() => btn.innerText = "Salin", 2000);
+        }
+
+        function calcRations() {
+            const crew = parseInt(document.getElementById('foodCrewCount').value) || 0;
+            const days = parseInt(document.getElementById('foodTripDays').value) || 0;
+
+            if (!crew || !days) return;
+
+            const waterNeeded = crew * days * 3; 
+            const riceNeeded = (crew * days * 0.4).toFixed(1); 
+            const estBudget = (crew * days * 15).toFixed(2);
+
+            document.getElementById('rationsResult').innerHTML = 
+                `<strong>Cadangan Bekalan Minimum (${crew} Kru / ${days} Hari):</strong><br>` +
+                `💧 Air Minuman: <strong>${waterNeeded} Liter</strong> (~${Math.ceil(waterNeeded / 1.5)} Botol Besar 1.5L)<br>` +
+                `🌾 Beras: <strong>${riceNeeded} KG</strong><br>` +
+                `🛒 Est. Bajet Dapur/Lauk: <strong>RM ${estBudget}</strong>`;
+        }
+
+        function calcCrewShare() {
+            const net = parseFloat(document.getElementById('crewNetProfit').value);
+            const count = parseInt(document.getElementById('crewCount').value);
+            if (!net || !count) return;
+            const share = (net * 0.5) / count;
+            document.getElementById('crewResult').innerHTML = `Setiap Awak-awak (50% Split): <strong>RM ${share.toFixed(2)}</strong> / orang`;
+        }
+
+        function addLog() {
+            const note = document.getElementById('logNote').value;
+            const fishType = document.getElementById('logFishType').value;
+            const fishWeight = document.getElementById('logFishWeight').value;
+            const amount = document.getElementById('logAmount').value;
+
+            if(!note || !amount) return;
+
+            let logs = JSON.parse(localStorage.getItem('nelayanLogs') || '[]');
+            logs.push({ note, fishType, fishWeight, amount, date: new Date().toLocaleDateString() });
+            localStorage.setItem('nelayanLogs', JSON.stringify(logs));
+            renderLogs();
+        }
+
+        function shareWhatsApp() {
+            let logs = JSON.parse(localStorage.getItem('nelayanLogs') || '[]');
+            if(logs.length === 0) { alert("Tiada log rekod."); return; }
+            const lastLog = logs[logs.length - 1];
+            const text = `*LAPORAN TRIP NELAYAN KABONG*%0A📅 Tarikh: ${lastLog.date}%0A📝 Trip: ${lastLog.note}%0A🐟 Ikan: ${lastLog.fishType} (${lastLog.fishWeight}kg)%0A💰 Untung Bersih: RM ${lastLog.amount}`;
+            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+        }
+
+        function renderLogs() {
+            let logs = JSON.parse(localStorage.getItem('nelayanLogs') || '[]');
+            const container = document.getElementById('logList');
+            container.innerHTML = logs.map(l => `
+                <div class="logbook-item">
+                    <div>
+                        <strong>${l.date} - ${l.note}</strong><br>
+                        <small style="color:var(--seafoam-green);"><i class="fa-solid fa-fish"></i> ${l.fishType || 'Lain-lain'} (${l.fishWeight || 0}kg)</small>
+                    </div>
+                    <strong style="color:var(--seafoam-green)">RM ${parseFloat(l.amount).toFixed(2)}</strong>
+                </div>
+            `).join('');
+        }
+
+        renderLogs();
+    </script>
+</body>
+</html>
